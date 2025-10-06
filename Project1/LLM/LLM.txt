@@ -1,0 +1,22 @@
+Information about the use of ChatGPT:
+
+In this project, we have used ChatGPT for help with
+the following:
+• Used to help with the implementation of code. The
+numerical solutions are all created by the authors
+of this project, but ChatGPT has been used to in-
+crease efficiency in handling errors in the Python
+code and making plots.
+• Used to ask questions about uncertainties in the
+project description.
+• The website Grammarly has been used as a tool
+for avoiding spelling mistakes. Only the free ver-
+sion has been used, meaning it helps with spelling
+mistakes, but it does not rewrite or improve the
+contents of the report.
+
+Examples of usage:
+
+"What do they mean aboout creating a LLM folder"
+"I need to divide the subplot into two subplots instead, can you help make a faster code to do so"
+"What is wrong with this code"

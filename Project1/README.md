@@ -32,8 +32,8 @@ It contains helper functions for data generation, optimization, plotting, and ev
 - **`metrics_utils.py`** – basic metrics such as mean squared error (MSE).  
 - **`optims.py`** – optimization algorithms including GD, Momentum, AdaGrad, RMSprop, and Adam, plus SGD variants.  
 - **`plotting_utils.py`** – plotting helpers for convergence curves and coefficient comparisons.  
-- **`resampling_utils.py`** – utilities for creating K-fold splits and bootstrap samples.  
-- **`trainers.py`** – high-level functions that train and compare different optimizer families.
+- **`resampling_utils.py`** – utilities for creating K-fold splits.
+- **`trainers.py`** – functions that train and compare different optimizer families.
 
 * LLM
     * Contains information on how we have used ChatGPT in the project. 

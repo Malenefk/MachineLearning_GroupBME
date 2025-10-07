@@ -10,7 +10,7 @@ The Project 1 folder is divided into several folders. Beneath is an explanation 
 
    *One folder called task1e-1h. This folder includes scripts needed to reproduce the results for task 1e, 1f, 1g and 1h. A requirments text file for these specific task are also in the folder.
 
-      - **`GDvsSGD.ipynb`** – compares Gradient Descent (GD), Stochastic Gradient Descent (SGD), and adaptive optimizers for OLS, Ridge, and LASSO          regression.  
+   - **`GDvsSGD.ipynb`** – compares Gradient Descent (GD), Stochastic Gradient Descent (SGD), and adaptive optimizers for OLS, Ridge, and LASSO          regression.  
       - **`Bootstrap.ipynb`** – performs bootstrap resampling to study bias and variance when changing polynomial degree.  
       - **`K-fold.ipynb`** – runs K-fold cross-validation to estimate training and test error for different model complexities.
 
@@ -22,8 +22,8 @@ The Project 1 folder is divided into several folders. Beneath is an explanation 
 
       ### Python Module Folder: `mlmods/`
 
-         This folder acts as a small local library that all notebooks import from.  
-         It contains helper functions for data generation, optimization, plotting, and evaluation.
+        This folder acts as a small local library that all notebooks import from.  
+        It contains helper functions for data generation, optimization, plotting, and evaluation.
 
       - **`__init__.py`** – marks this folder as a Python package.  
       - **`closed_form.py`** – closed-form solutions for OLS and Ridge regression.  

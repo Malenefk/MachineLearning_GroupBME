@@ -12,3 +12,12 @@ This repository will include all projects in the Machine Learning course as sepe
 - LLM folder. Contains information about the usage of ChatGPT in our project.
 - A requirements text file.
 - Final Project. Contains a PDF of the finale report. 
+
+# Project 2 includes:
+- Readme
+- Code folder that contains the following:
+  - Notebooks including plots.
+  - Python files containing the used functions.    
+- LLM folder. Contains information about the usage of ChatGPT in our project.
+- A requirements text file.
+- Final Project. Contains a PDF of the finale report. 

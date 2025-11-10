@@ -1,0 +1,29 @@
+LLM
+
+For this project we have used the following of AI tools:
+
+- ChatGPT is used to research errors in the code and to help with the plotting and visualizing of results. 
+It is only used as help with the programming, everything is written by the authors of Project2 expect from some parts
+of the code which is implemented from the Lecture Notes. Those parts have been cited both in the report and in the neural network code. 
+
+- Grammarly is used in some parts of the Report to help with the grammar. Only the free version is used, meaning it helps with pure grammar,
+it does not rephrase or help write the text. 
+
+Examples (these are directly copied from the ChatGPT site):
+"""
+jeg forventa fra denne 4 plots, en med test error for 1 og 2 hidden layers med RELU, samme men for LRELU og en med train error for 1 og 2 hidden
+layers med RELU og en med samme for LRELU, men istedenfor har jeg nå 8 plots hva blir feil og gir disse plotsa mening lenger?
+"""
+
+"""
+For nodes [1,50,1] får jeg train error 0.803 og for [1,50,100,1] får jeg train error 47365 det er vel noe feil med koden kanskje
+"""
+
+"""
+nå har jeg lagt til gradient clipping, verdiene eksploderer enda litt ved for mange epoker som jeg syns er litt rart? jeg endte opp med å følge
+geeks for geeks som er clip = clip_tol / gradient_norm som jeg regna med np.linalg.norm ..
+så tok jeg gad_norm > 1 skal ganges med clip, altså clip * gradient oooooogså lurte jeg på, hvordan kan jeg mest effektivt plotte dette?
+du trenger ikke å gi meg hel kode, men må jeg lage en ny funksjon i neural network eller ville du anbefalt å kjøre fit for ulike
+læringsrater og forskjellige grad optimizzers, og lagre results i en liste og plotte? ser ikke helt for meg at det blir riktig heller
+"""
+

@@ -568,11 +568,11 @@ class FFNN:
                 for sch in self.schedulers_bias:
                     sch.reset()
 
-                # compute performance metrics
-                pred_train = self.predict(X)
-                self.cost_func.derive = False 
+                # compute performance metrics using the network's output probabilities
+                pred_train = self._feedforward(X)
+                self.cost_func.derive = False
                 train_error = self.cost_func(pred_train, t, self.weights, lam)
-                train_errors[e] = train_error 
+                train_errors[e] = train_error
 
                 if self.classification:
                     train_acc = self._accuracy(pred_train, t)
@@ -728,55 +728,65 @@ class FFNN:
         The function has no return value, but updates the weights and biases. 
         """
 
-        #Prepping the output function to be differentiated 
         output_func = self.output_activation
-        output_func.derive = True
-
-        #Prepping the hidden layer to be differentiated
         hidden_func = self.hidden_activation
-        hidden_func.derive = True 
+        cost_func = self.cost_func
 
-        #Starting from the last layer continuing backwards
-        for i in range(len(self.weights) -1, -1, -1):
-            if i == len(self.weights) -1: #last layer
-                #If single class classification
-                if (self.output_activation.__class__.__name__ == 'Softmax'):
-                    delta_matrix = self.a_matrices[i+1] - t 
-                else:
-                    cost_func = self.cost_func
-                    cost_func.derive = True 
-                    c_d = cost_func(self.a_matrices[-1],t, self.weights[i], lam)
-                    if self.classification:
-                        delta_matrix = output_func(self.z_matrices[i + 1]) * c_d
+        # store current derivative flags to ensure they are restored after backpropagation
+        prev_output_derive = getattr(output_func, "derive", False)
+        prev_hidden_derive = getattr(hidden_func, "derive", False)
+        prev_cost_derive = getattr(cost_func, "derive", False)
+
+        # enable derivative mode for gradient calculations
+        output_func.derive = True
+        hidden_func.derive = True
+        cost_func.derive = True
+
+        try:
+            #Starting from the last layer continuing backwards
+            for i in range(len(self.weights) -1, -1, -1):
+                if i == len(self.weights) -1: #last layer
+                    #If single class classification
+                    if (self.output_activation.__class__.__name__ == 'Softmax'):
+                        delta_matrix = self.a_matrices[i+1] - t
                     else:
-                        delta_matrix = c_d 
+                        c_d = cost_func(self.a_matrices[-1],t, self.weights[i], lam)
+                        if self.classification:
+                            delta_matrix = output_func(self.z_matrices[i + 1]) * c_d
+                        else:
+                            delta_matrix = c_d
 
-            else:
-                delta_matrix = (self.weights[i + 1][1:, :] @ delta_matrix.T).T * hidden_func(self.z_matrices[i + 1])
+                else:
+                    delta_matrix = (self.weights[i + 1][1:, :] @ delta_matrix.T).T * hidden_func(self.z_matrices[i + 1])
 
-            # calculate gradient
-            gradient_weights = self.a_matrices[i][:, 1:].T @ delta_matrix 
-            gradient_bias = np.sum(delta_matrix, axis=0).reshape(1, delta_matrix.shape[1])
-            if self.cost_func.norm == 'L1':
-                gradient_weights += lam * np.sign(self.weights[i][1:,:])
-            elif self.cost_func.norm == 'L2':
-                gradient_weights += 2*lam * self.weights[i][1:,:]
-            else:
-                gradient_weights += self.weights[i][1:, :] * lam
+                # calculate gradient
+                gradient_weights = self.a_matrices[i][:, 1:].T @ delta_matrix
+                gradient_bias = np.sum(delta_matrix, axis=0).reshape(1, delta_matrix.shape[1])
+                if self.cost_func.norm == 'L1':
+                    gradient_weights += lam * np.sign(self.weights[i][1:,:])
+                elif self.cost_func.norm == 'L2':
+                    gradient_weights += 2*lam * self.weights[i][1:,:]
+                else:
+                    gradient_weights += self.weights[i][1:, :] * lam
 
-            #Because some of the results are blowing up (overflow error) we introduce clipping of the norm:
-            #https://www.geeksforgeeks.org/deep-learning/understanding-gradient-clipping/
-            norm = np.linalg.norm(gradient_weights)
-            clip_factor = 1 / norm
-            if norm > 1.0:
-                gradient_weights = gradient_weights * clip_factor
-    
-            update_matrix = np.vstack(
-                [self.schedulers_bias[i].update_change(gradient_bias),
-                 self.schedulers_weight[i].update_change(gradient_weights)])
+                #Because some of the results are blowing up (overflow error) we introduce clipping of the norm:
+                #https://www.geeksforgeeks.org/deep-learning/understanding-gradient-clipping/
+                norm = np.linalg.norm(gradient_weights)
+                clip_factor = 1 / norm
+                if norm > 1.0:
+                    gradient_weights = gradient_weights * clip_factor
 
-            # update weights and bias
-            self.weights[i] -= update_matrix
+                update_matrix = np.vstack(
+                    [self.schedulers_bias[i].update_change(gradient_bias),
+                     self.schedulers_weight[i].update_change(gradient_weights)])
+
+                # update weights and bias
+                self.weights[i] -= update_matrix
+        finally:
+            # reset derivative flags so subsequent feed-forward passes use the activation functions themselves
+            output_func.derive = prev_output_derive
+            hidden_func.derive = prev_hidden_derive
+            cost_func.derive = prev_cost_derive
 
     def _accuracy(self, predictions: np.ndarray, targets: np.ndarray):
             """
